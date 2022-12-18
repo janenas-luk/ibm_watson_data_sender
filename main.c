@@ -12,6 +12,7 @@ static struct argp_option options[] = { { "orgid", 'o', "organization", 0, "Orga
 					{ "typeid", 't', "type", 0, "Type id" },
 					{ "deviceid", 'd', "device", 0, "Device id" },
 					{ "authtoken", 'a', "token", 0, "Authorization token" },
+					{ "config", 'c', "configfile", 0, "Configuration file" },
 					{ 0 } };
 
 struct argp argp = { options, parse_opt, NULL, NULL };
@@ -24,12 +25,11 @@ void sigHandler(int signo)
 	interrupt = 1;
 }
 
-void hello(char *id, int rc, void *success, void *failure)
-{
-	printf("Event callback response for client: %s\n", id ? id : "");
-}
+// void dummy_cb(char *id, int rc, void *success, void *failure)
+// {
+// 	printf("Event callback response for client: %s\n", id ? id : "");
+// }
 
-/* Main program */
 int main(int argc, char *argv[])
 {
 	int rc = 0;
@@ -39,11 +39,6 @@ int main(int argc, char *argv[])
 	struct WatsonArgs wargs = { 0 };
 
 	argp_parse(&argp, argc, argv, 0, 0, &wargs);
-	// printf("Orgid %s\n", wargs.orgid);
-	// printf("Typeid %s\n", wargs.typeid);
-	// printf("Deviceid %s\n", wargs.deviceid);
-	// printf("Authtoken %s\n", wargs.token);
-	// exit(1);
 
 	/* Set signal handlers */
 	signal(SIGINT, sigHandler);
@@ -51,11 +46,12 @@ int main(int argc, char *argv[])
 
 	rc = init_watson(&config, &device, &wargs);
 	if (rc != 0) {
+		printf("Unable to init watson client\n");
 		// fprintf(stderr, "ERROR: Failed to initialize configuration: rc=%d\n", rc);
 		goto watson_cleanup;
 	}
 
-	// set_watson_cbs(device, &hello);
+	// set_watson_cbs(device, &dummy_cb);
 
 	char *data = "{\"d\" : {\"SensorID\": \"Test\", \"Reading\": 15 }}";
 

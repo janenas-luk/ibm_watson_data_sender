@@ -18,16 +18,8 @@ error_t parse_opt(int key, char *arg, struct argp_state *state)
 	case 'a':
 		strcpy(arguments->token, arg);
 		break;
-	case ARGP_KEY_ARG:
-		if (state->arg_num >= 2) {
-			// argp_usage(state);
-		}
-		// arguments->args[state->arg_num] = arg;
-		break;
-	case ARGP_KEY_END:
-		if (state->arg_num < 2) {
-			// argp_usage(state);
-		}
+	case 'c':
+		strncpy(arguments->config, arg, 127);
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;
